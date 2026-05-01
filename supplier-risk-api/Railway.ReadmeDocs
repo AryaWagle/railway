@@ -1,0 +1,186 @@
+# Railway.ReadmeDocs (2026 Pro Plan)
+
+This is the final deployment runbook for this project on Railway Pro.
+
+## Project architecture
+
+Deploy as **three services** in one Railway project:
+- `supplier-risk-api-backend` (FastAPI, port `8000`)
+- `supplier-risk-ui` (Streamlit, stakeholder-facing Python UI)
+- `sri-command-web` (Next.js UI, optional parallel stakeholder-facing UI)
+
+Keep all services in the same Railway project to use private networking.
+
+## 2026 Pro-plan notes (from Railway docs/pricing)
+
+- Pro subscription: `$20/month`, includes `$20` monthly usage credits.
+- Usage above included credits is billed by actual resource usage.
+- High service/replica limits (Pro tier), suited for production rollout.
+- Log retention and observability are stronger than lower tiers.
+- Usage limits (email + hard cap) are available and recommended.
+
+References:
+- https://railway.com/pricing
+- https://docs.railway.com/reference/pricing/plans
+- https://docs.railway.com/reference/usage-limits
+
+## Pre-deploy checklist (local)
+
+Run from `supplier-risk-api/`:
+
+```bash
+./scripts/bootstrap.sh
+./scripts/run_backend.sh
+./scripts/run_frontend.sh
+```
+
+Validate:
+- `http://127.0.0.1:8000/health` returns 200
+- `http://127.0.0.1:8501` loads
+- UI nav works on mobile (top `Navigate` selector)
+
+Run from `sri-command/`:
+
+```bash
+npm install
+npm run dev
+```
+
+Validate:
+- `http://127.0.0.1:3000/overview` loads
+- `/suppliers`, `/analytics`, `/what-if`, `/model-insights` are accessible
+
+## Deploy path A: Railway dashboard (recommended)
+
+1. Push code to GitHub.
+2. In Railway, create a new project from the repo.
+3. Create service `supplier-risk-api-backend`.
+4. Create service `supplier-risk-ui`.
+5. Create service `sri-command-web`.
+6. Configure all services as below.
+
+### Backend service config
+
+- Service name: `supplier-risk-api-backend`
+- Build: Railpack auto-detect
+- Start command:
+
+```bash
+APP_ENV=production PORT=$PORT HOST=0.0.0.0 ./scripts/run_backend.sh
+```
+
+- Variables:
+  - `APP_ENV=production`
+  - `HOST=0.0.0.0`
+- Health check path: `/health`
+
+### Frontend service config
+
+- Service name: `supplier-risk-ui`
+- Build: Railpack auto-detect
+- Start command:
+
+```bash
+APP_ENV=production PORT=$PORT HOST=0.0.0.0 ./scripts/run_frontend.sh
+```
+
+- Variables:
+  - `APP_ENV=production`
+  - `HOST=0.0.0.0`
+  - `RISK_API_URL=http://supplier-risk-api-backend.railway.internal:8000`
+
+If your internal hostname differs, use the private URL shown by Railway for backend service.
+
+### Next.js service config
+
+- Service name: `sri-command-web`
+- Root directory: `sri-command`
+- Build command:
+
+```bash
+npm ci && npm run build
+```
+
+- Start command:
+
+```bash
+npx next start -H 0.0.0.0 -p $PORT
+```
+
+- Variables:
+  - `RISK_API_URL=http://supplier-risk-api-backend.railway.internal:8000`
+  - (optional) `OSH_API_TOKEN=<token>` if/when live OSH access is ready
+
+## Deploy path B: Railway CLI (optional)
+
+Install CLI first:
+
+```bash
+npm i -g @railway/cli
+railway login
+```
+
+Then initialize/link project and deploy service by service from repo root.
+Use Railway UI for service-level start commands and variables if preferred.
+
+## Production hardening (already in repo)
+
+- Backend:
+  - Production runs without reload when `APP_ENV=production`.
+  - Request logging middleware with request ID + latency.
+- Streamlit:
+  - Production run disables file watcher.
+  - Browser debug details hidden.
+  - Toolbar minimal.
+  - Mobile-safe top navigation selector.
+- Next.js:
+  - Production build/start command defined above.
+  - Uses backend via `RISK_API_URL` for portfolio/API-backed data paths.
+
+## Pro-plan cost control and reliability settings
+
+In Railway workspace/project:
+
+1. Set **usage email alert** (soft threshold).
+2. Set **hard usage limit** to protect budget.
+3. Set **replica limits** for each service.
+4. Keep services on private networking.
+5. Start with:
+   - backend: 1 replica, modest RAM
+   - streamlit: 1 replica, modest RAM
+   - next.js: 1 replica, modest RAM
+6. Scale only after observing CPU/RAM and latency.
+
+## Final smoke test before sharing
+
+After deploy, run:
+
+1. Open Streamlit public URL on mobile + desktop.
+2. Navigate all Streamlit pages:
+   - Overview
+   - Suppliers
+   - Analytics
+   - Score a supplier
+   - Model insights
+3. Run 10 searches on Streamlit Suppliers.
+4. Submit one score scenario.
+5. Open Next.js URL and verify:
+   - `/overview`
+   - `/suppliers`
+   - `/analytics`
+   - `/what-if`
+   - `/model-insights`
+6. Verify backend health endpoint.
+7. Confirm no `undefined`/icon text leaks in either UI.
+
+## Stakeholder share checklist
+
+- Share Streamlit URL and/or Next.js URL depending on stakeholder preference.
+- Keep backend URL private unless needed for technical review.
+- Warm app once before demo (prevents cold-start delay).
+- Keep 3 prepared search examples:
+  - known supplier ID
+  - category keyword
+  - no-result query (to show graceful UX)
+
+This is deployment-ready for stakeholder demo on Railway Pro.

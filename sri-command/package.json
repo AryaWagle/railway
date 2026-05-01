@@ -1,0 +1,44 @@
+{
+  "name": "sri-command",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack --hostname 127.0.0.1 --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "test": "node --import tsx --test \"src/**/*.test.ts\"",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@joacod/pixel-ui": "^0.13.2",
+    "animejs": "^3.2.2",
+    "d3-geo": "^3.1.1",
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.0",
+    "papaparse": "^5.5.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "recharts": "^3.8.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@playwright/test": "^1.59.1",
+    "@tailwindcss/postcss": "^4.1.4",
+    "@types/animejs": "^3.1.13",
+    "@types/d3-geo": "^3.1.0",
+    "@types/node": "^22.14.0",
+    "@types/papaparse": "^5.5.2",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/topojson-client": "^3.1.5",
+    "eslint": "^9.24.0",
+    "eslint-config-next": "^15.5.0",
+    "tailwindcss": "^4.1.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}

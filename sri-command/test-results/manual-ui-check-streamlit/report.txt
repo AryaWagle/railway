@@ -1,0 +1,18 @@
+Overview loaded
+Page Overview: ok
+Page Suppliers: ok
+Page Analytics: not-detected
+Page Score a supplier: not-detected
+Page Model insights: not-detected
+Search run SUP-00001
+Search run SUP-00012
+Search run Electronics
+Search run India
+Search run Textiles
+Search run SUP-00100
+Search run Auto
+Search run Chem
+Search run SUP-00333
+Search run NonExistingSupplierXYZ
+Analytics page not reliably detected in headless sidebar interaction
+Mobile screenshot captured

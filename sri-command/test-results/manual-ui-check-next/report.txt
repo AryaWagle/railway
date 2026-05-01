@@ -1,0 +1,20 @@
+Page ok /overview
+Page ok /suppliers
+Page ok /analytics
+Page ok /what-if
+Page ok /model-insights
+Search bangladesh -> http://127.0.0.1:3000/suppliers?q=bangladesh
+Search india -> http://127.0.0.1:3000/suppliers?q=india
+Search vietnam -> http://127.0.0.1:3000/suppliers?q=vietnam
+Search electronics -> http://127.0.0.1:3000/suppliers?q=electronics
+Search apparel -> http://127.0.0.1:3000/suppliers?q=apparel
+Search mexico -> http://127.0.0.1:3000/suppliers?q=mexico
+Search germany -> http://127.0.0.1:3000/suppliers?q=germany
+Search turkiye -> http://127.0.0.1:3000/suppliers?q=turkiye
+Search logistics -> http://127.0.0.1:3000/suppliers?q=logistics
+Search nonexistent987 -> http://127.0.0.1:3000/suppliers?q=nonexistent987
+Analytics tab ok Executive
+Analytics tab ok Trends
+Analytics tab ok Quality
+Analytics tab ok Portfolio (5k)
+Mobile viewport shot captured
